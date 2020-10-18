@@ -6,10 +6,17 @@
 #include "lib/utimer.cpp"
 
 
+using std::chrono::high_resolution_clock;
+using std::vector;
+using std::swap;
+using std::cout;
+using tools::rand_vec;
+
+
 #define ARG_COUNT 4
 
 
-void OddEvenSort(std::vector < int > inputArr) {
+void OddEvenSort(vector<int> inputArr) {
     // 
     int len = inputArr.size();
     bool is_sorted = false;
@@ -24,7 +31,7 @@ void OddEvenSort(std::vector < int > inputArr) {
             // start ind: 0 - even or 1 - odd
             while (ind < len - 1) {
                 if (inputArr[ind] > inputArr[ind + 1]) {
-                    std::swap(inputArr[ind], inputArr[ind + 1]);
+                    swap(inputArr[ind], inputArr[ind + 1]);
                     is_sorted = false;
                 }
                 ind += 2;
@@ -38,7 +45,7 @@ void OddEvenSort(std::vector < int > inputArr) {
 int main(int argc, char * argv[]) {
     // Read Input
     if (argc != ARG_COUNT) {
-        std::cout << "Input Error. Number of argument is wrong..\n";
+        cout << "Input Error. Number of argument is wrong..\n";
         exit(0);
     }
 
@@ -48,7 +55,7 @@ int main(int argc, char * argv[]) {
 
     // input validation
     if (N < 0 || limit < 0 || seed < 0) {
-        std::cout << "Input Error. Invalid Input..\n";
+        cout << "Input Error. Invalid Input..\n";
         exit(0);
     }
 
@@ -57,11 +64,11 @@ int main(int argc, char * argv[]) {
     else
         srand(seed);
 
-    std::vector < int > Arr = tools::rand_vec(N, limit);
+    vector<int> Arr = rand_vec(N, limit);
 
     // Start & Run OddEvenSort
     utimer *timer = new utimer("Seq Code");
-    auto start = std::chrono::high_resolution_clock::now();
+    auto start = high_resolution_clock::now();
     OddEvenSort(Arr);
     timer -> ~utimer();
 
