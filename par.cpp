@@ -21,55 +21,57 @@ using std::cout;
 
 /// generate random vector
 vector<int> rand_vec(int nloop, int limit) {
-	utimer *timer_rand = new utimer("Generate Rand Vec");
-	
-	// number of threads
-	const size_t nthreads = thread::hardware_concurrency();
-	
-	vector<thread> threads(nthreads);	// threads vector
-	vector<int> threadArr[nthreads];	// to save generated rand values for ecah thread
-	for(int th = 0; th < nthreads; th++) {
-		// configure rand
-		int seed = timer_rand->elapsed();
-		srand(seed);
-		
-		// thread (function, parameters)
-		threads[th] = thread(
-			[&](const int si, const int ei, const int th) {
-				// loop over all items
-				for(int i = si; i < ei; i++)
-					threadArr[th].push_back((i*rand())%limit);
-			}, 
-			th * nloop / nthreads,
-			(th+1) == nthreads ? nloop : (th+1) * nloop / nthreads, 
-			th
-		);
-	}
-	
-	std::for_each(threads.begin(), threads.end(), [](thread &th) { th.join(); });
+    utimer *timer_rand = new utimer("Generate Rand Vec");
 
-	vector<int> retArr;
-	for(int i = 0; i < nthreads; i++)
-		for(int x: threadArr[i])
-			retArr.push_back(x);
-	
-	// print time to generate rand vector
-	timer_rand -> ~utimer();
-	
-	return retArr;
+    // number of threads
+    const size_t nthreads = thread::hardware_concurrency();
+
+    vector<thread> threads(nthreads);	// threads vector
+    vector<int> threadArr[nthreads];	// to save generated rand values for ecah thread
+    for(int th = 0; th < nthreads; th++) {
+        // configure rand
+        int seed = timer_rand->elapsed();
+        srand(seed);
+
+        // thread (function, parameters)
+        threads[th] = thread(
+            [&](const int si, const int ei, const int th) {
+                // loop over all items
+                for(int i = si; i < ei; i++)
+                    threadArr[th].push_back((i*rand())%limit);
+            },
+            th * nloop / nthreads,
+            (th+1) == nthreads ? nloop : (th+1) * nloop / nthreads,
+            th
+        );
+    }
+
+    std::for_each(threads.begin(), threads.end(), [](thread &th) {
+        th.join();
+    });
+
+    vector<int> retArr;
+    for(int i = 0; i < nthreads; i++)
+        for(int x: threadArr[i])
+            retArr.push_back(x);
+
+    // print time to generate rand vector
+    timer_rand -> ~utimer();
+
+    return retArr;
 }
 
 /// print vector
 void print_vec(vector<int> &vec) {
-	std::cout << "\n";
-	for (auto x: vec)
-		std::cout << x << "\t";
-	std::cout << "\n\n";
+    std::cout << "\n";
+    for (auto x: vec)
+        std::cout << x << "\t";
+    std::cout << "\n\n";
 }
 
 /// Odd-Even Sort
 void OddEvenSort(vector<int> inputArr) {
-    // 
+    //
     int nloop = inputArr.size();
     bool is_sorted = false;
     int startIndex[2] = {0, 1}; // 0 - Even, 1 - Odd
@@ -78,35 +80,37 @@ void OddEvenSort(vector<int> inputArr) {
 
     while (!is_sorted) {
         is_sorted = true;
-		
-		for (int ind: startIndex) {
-			// number of threads
-			const size_t nthreads = thread::hardware_concurrency();
 
-			vector<thread> threads(nthreads);	// threads vector
-						
-			for(int th = 0; th < nthreads; th++) {
-				int len = nloop / nthreads;
-				int startInd = th * len - (th * len) % 2 + ind;
-				int endInd = (th+1) == nthreads ? nloop : std::min(startInd + len, nloop);
-				
-				threads[th] = thread(
-					[&](const int si, const int ei, const int th) {
-						// loop over all items
-						for(int i = si; i < ei; i+=2)
-							if(inputArr[i] > inputArr[i+1]) {
-								swap(inputArr[i], inputArr[i + 1]);
-								is_sorted = false;
-							}
-					}, 
-					startInd,
-					endInd, 
-					th
-				);
-			}
+        for (int ind: startIndex) {
+            // number of threads
+            const size_t nthreads = thread::hardware_concurrency();
 
-			std::for_each(threads.begin(), threads.end(), [](thread &th) { th.join(); });
-		}
+            vector<thread> threads(nthreads);	// threads vector
+
+            for(int th = 0; th < nthreads; th++) {
+                int len = nloop / nthreads;
+                int startInd = th * len - (th * len) % 2 + ind;
+                int endInd = (th+1) == nthreads ? nloop : std::min(startInd + len, nloop);
+
+                threads[th] = thread(
+                    [&](const int si, const int ei, const int th) {
+                        // loop over all items
+                        for(int i = si; i < ei; i+=2)
+                            if(inputArr[i] > inputArr[i+1]) {
+                                swap(inputArr[i], inputArr[i + 1]);
+                                is_sorted = false;
+                            }
+                    },
+                    startInd,
+                    endInd,
+                    th
+                );
+            }
+
+            std::for_each(threads.begin(), threads.end(), [](thread &th) {
+                th.join();
+            });
+        }
     }
 
     // print sorted vector
@@ -135,8 +139,8 @@ int main(int argc, char * argv[]) {
     else
         srand(seed);
 
-	// genereate random vector
-	vector<int> Arr = rand_vec(N, limit);
+    // genereate random vector
+    vector<int> Arr = rand_vec(N, limit);
 
     // call OddEvenSort function
     utimer *timer = new utimer("Parallel Code");

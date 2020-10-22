@@ -14,23 +14,23 @@ using std::cout;
 
 /// generate random vector
 vector<int> rand_vec(int n, int limit) {
-	vector<int> vec;
-	for (int i = 1; i <= n; i++)
-		vec.push_back((i*rand())%limit);
-	return vec;
+    vector<int> vec;
+    for (int i = 1; i <= n; i++)
+        vec.push_back((i*rand())%limit);
+    return vec;
 }
 
 /// print vector
 void print_vec(vector<int> &vec) {
-	std::cout << "\n";
-	for (auto x: vec)
-		std::cout << x << "\t";
-	std::cout << "\n\n";
+    std::cout << "\n";
+    for (auto x: vec)
+        std::cout << x << "\t";
+    std::cout << "\n\n";
 }
 
 /// Odd-Even Sort
 void OddEvenSort(vector<int> inputArr) {
-    // 
+    //
     int len = inputArr.size();
     bool is_sorted = false;
     int startIndex[2] = {0, 1}; // 0 - Even, 1 - Odd
