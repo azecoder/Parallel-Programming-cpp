@@ -2,7 +2,6 @@
 #include <vector>
 #include <chrono>
 
-#include "lib/tools.cpp"
 #include "lib/utimer.cpp"
 
 
@@ -10,12 +9,27 @@ using std::chrono::high_resolution_clock;
 using std::vector;
 using std::swap;
 using std::cout;
-using tools::rand_vec;
-
 
 #define ARG_COUNT 4
 
+// generate random vector
+vector<int> rand_vec(int n, int limit) {
+	vector<int> vec;
+	for (int i = 1; i <= n; i++)
+		vec.push_back((i*rand())%limit);
+	return vec;
+}
 
+// print vector
+void print_vec(vector<int> &vec)
+{
+	std::cout << "\n";
+	for (auto x: vec)
+		std::cout << x << "\t";
+	std::cout << "\n";
+}
+
+// Odd-Even Sort
 void OddEvenSort(vector<int> inputArr) {
     // 
     int len = inputArr.size();
@@ -39,7 +53,7 @@ void OddEvenSort(vector<int> inputArr) {
         }
     }
     // Print Sorted Vector
-    tools::print(inputArr);
+    print_vec(inputArr);
 }
 
 int main(int argc, char * argv[]) {
