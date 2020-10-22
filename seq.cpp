@@ -12,7 +12,7 @@ using std::cout;
 
 #define ARG_COUNT 4
 
-// generate random vector
+/// generate random vector
 vector<int> rand_vec(int n, int limit) {
 	vector<int> vec;
 	for (int i = 1; i <= n; i++)
@@ -20,16 +20,15 @@ vector<int> rand_vec(int n, int limit) {
 	return vec;
 }
 
-// print vector
-void print_vec(vector<int> &vec)
-{
+/// print vector
+void print_vec(vector<int> &vec) {
 	std::cout << "\n";
 	for (auto x: vec)
 		std::cout << x << "\t";
 	std::cout << "\n\n";
 }
 
-// Odd-Even Sort
+/// Odd-Even Sort
 void OddEvenSort(vector<int> inputArr) {
     // 
     int len = inputArr.size();

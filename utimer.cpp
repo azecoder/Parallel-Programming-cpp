@@ -8,7 +8,7 @@
 
 class utimer {
     std::chrono::system_clock::time_point start;
-    std::chrono::system_clock::time_point stop;
+    std::chrono::system_clock::time_point stop, pause;
     std::string message;
     using usecs = std::chrono::microseconds;
     using msecs = std::chrono::milliseconds;
@@ -27,16 +27,20 @@ class utimer {
         }
 
         ~utimer() {
-            stop =
-                std::chrono::system_clock::now();
-            std::chrono::duration < double > elapsed =
-                stop - start;
-            auto musec =
-                std::chrono::duration_cast < std::chrono::microseconds > (elapsed).count();
+            stop = std::chrono::system_clock::now();
+            std::chrono::duration < double > elapsed = stop - start;
+            auto musec = std::chrono::duration_cast < std::chrono::microseconds > (elapsed).count();
 
             std::cout << message << " computed in " << musec << " usec " <<
                 std::endl;
             if (us_elapsed != NULL)
                 ( * us_elapsed) = musec;
         }
+        
+        auto elapsed() {
+			pause = std::chrono::system_clock::now();
+			std::chrono::duration < double > elapsed = pause - start;
+			auto musec = std::chrono::duration_cast < std::chrono::microseconds > (elapsed).count();
+			return musec;
+		}
 };
