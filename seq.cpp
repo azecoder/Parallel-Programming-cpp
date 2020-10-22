@@ -2,7 +2,7 @@
 #include <vector>
 #include <chrono>
 
-#include "lib/utimer.cpp"
+#include "utimer.cpp"
 
 
 using std::chrono::high_resolution_clock;
@@ -26,7 +26,7 @@ void print_vec(vector<int> &vec)
 	std::cout << "\n";
 	for (auto x: vec)
 		std::cout << x << "\t";
-	std::cout << "\n";
+	std::cout << "\n\n";
 }
 
 // Odd-Even Sort
@@ -81,8 +81,7 @@ int main(int argc, char * argv[]) {
     vector<int> Arr = rand_vec(N, limit);
 
     // Start & Run OddEvenSort
-    utimer *timer = new utimer("Seq Code");
-    auto start = high_resolution_clock::now();
+    utimer *timer = new utimer("Sequential Code");
     OddEvenSort(Arr);
     timer -> ~utimer();
 
