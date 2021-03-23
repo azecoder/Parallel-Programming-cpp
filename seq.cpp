@@ -81,7 +81,7 @@ int main(int argc, char * argv[]) {
     timer -> ~utimer();
 
     // Print Sorted Vector
-    print_vec(Arr);
+    // print_vec(Arr);
 
     return 0;
 }

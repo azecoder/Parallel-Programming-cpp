@@ -25,7 +25,7 @@ const int MAXX = 1e5+10;
 
 
 
-// mt19937 random number generator
+/// mt19937 random number generator
 int rand_generator(int mn, int mx) {
     thread_local random_device rd;
     thread_local mt19937 rng(rd());  
@@ -35,7 +35,7 @@ int rand_generator(int mn, int mx) {
 
 /// generate random vector
 vi rand_vec(int N, int nw) {
-    utimer *timer_rand = new utimer("Rand Numbers");
+    utimer *timer_rand = new utimer("Generate Rand Vec");
     vi randArr(N);
     #pragma omp parallel for num_threads(nw)
     for(int &x: randArr)

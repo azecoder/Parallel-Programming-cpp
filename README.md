@@ -20,6 +20,14 @@ while (ind < len - 1) {
 ```
 
 
-
 ### Parallel Code
 
+
+#### To Run Sequential Code
+```g++ seq.cpp -o seq.o -O3```
+
+#### To Run Parallel C++ code
+```g++ par.cpp -o par.o -O3 -pthread```
+
+#### To Run OpenMP code
+```g++ par_openmp.cpp -O3 -fopenmp -o par_openmp.o```
