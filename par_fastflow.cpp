@@ -1,21 +1,15 @@
 #include <iostream>
 #include <vector>
-#include <chrono>
 #include <random>
+#include <algorithm>
 
 #include "utimer.cpp"
 
 #include <ff/ff.hpp>
 #include <ff/parallel_for.hpp>
 
-
-using std::chrono::high_resolution_clock;
-using std::vector;
-using std::swap;
-using std::cout;
-using std::mt19937;
-using std::random_device;
-using std::uniform_int_distribution;
+using namespace ff;
+using namespace std;
 
 #define vk vector
 #define pb push_back
@@ -27,75 +21,56 @@ const int MINN = -1e5;
 const int MAXX = 1e5+10;
 
 
-
-// mt19937 random number generator
+/// mt19937 random number generator
 int rand_generator(int mn, int mx) {
     thread_local random_device rd;
-    thread_local mt19937 rng(rd());  
+    thread_local mt19937 rng(rd());
     thread_local uniform_int_distribution<int> uid;
     return uid(rng, decltype(uid)::param_type{mn,mx});
 }
 
-// generate random vector
+/// generate random vector
 vi rand_vec(int N, int nw) {
-    utimer *timer_rand = new utimer("Generate Rand Vec");
     vi randArr(N);
-    ff::ParallelFor pr(nw);
 
-    // int chunk = N / nw;
-    int chunk = N;
-    pr.parallel_for_idx(0, N, 1, chunk, [&](const long si, const long ei, const long thid) {
-        // loop over all items
-        for(int i = si; i < ei; i++)
-            randArr[i] = rand_generator(MINN, MAXX);
+    ff::ParallelFor pr(nw);
+    ffTime(START_TIME);
+    pr.parallel_for(0, N, 1, 0, [&](const long idx) {
+        randArr[idx] = rand_generator(MINN, MAXX);
     });
-    timer_rand -> ~utimer();
+    ffTime(STOP_TIME);
+    // printf("Rand Gen Time = %g\n", ffTime(GET_TIME));
     return randArr;
 }
 
 /// print vector
 void print_vec(vi &vec) {
-    std::cout << "\n";
+    cout << "\n";
     for (auto x: vec)
-        std::cout << x << "\t";
-    std::cout << "\n\n";
+        cout << x << "\t";
+    cout << "\n\n";
 }
 
 /// Odd-Even Sort
-void OddEvenSort(vi &arr, int nw) {
+void OddEvenSort(vi &Arr, int nw) {
     //
-    int len = arr.size();
-    bool is_sorted = false;
-    int startIndex[2] = {0, 1}; // 0 - Even, 1 - Odd
+    int len = Arr.size();
+    vi startIndex = {0, 1}; // 0 - Even, 1 - Odd
     // Even Index starts from 0, Odd Index starts from 1.
     // Both will increase by 2 in each step.
 
     ff::ParallelFor pr(nw);
-    // int chunk = len / nw;
-    int chunk = len;
-
-    // int counter = 0;
-    while (!is_sorted) {
-        is_sorted = true;
-        // counter++;
-
-        // utimer *timer_loop = new utimer("1 Loop");
-        for (int ind: startIndex)
+    ffTime(START_TIME);
+    while (!is_sorted(Arr.begin(), Arr.end())) {
+        for(int ind: startIndex)
             // start ind: 0 - even or 1 - odd
-
-            pr.parallel_for_idx(ind, len-1, 1, chunk, [&](const long si, const long ei, const long thid) {
-
-                for(int i = si; i < ei; i+=2)
-                    if (arr[i] > arr[i + 1]) {
-                        swap(arr[i], arr[i + 1]);
-                        is_sorted = false;
-                    }
-            });
-        
-        // timer_loop -> ~utimer();
-        // return;
+            pr.parallel_for(ind, len-1, 2, 0, [&](const long idx) {
+            if(Arr[idx] > Arr[idx + 1])
+                swap(Arr[idx], Arr[idx + 1]);
+        });
     }
-    // cout << "Counter: " << counter << "\n";
+    ffTime(STOP_TIME);
+    printf("Parallel Time = %g\n", ffTime(GET_TIME));
 }
 
 int main(int argc, char * argv[]) {
@@ -119,9 +94,7 @@ int main(int argc, char * argv[]) {
     // print_vec(Arr);
 
     // Start & Run OddEvenSort
-    utimer *timer = new utimer("Parallel Code");
     OddEvenSort(Arr, nw);
-    timer -> ~utimer();
 
     // Print Sorted Vector
     // print_vec(Arr);
