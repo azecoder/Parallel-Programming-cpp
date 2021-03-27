@@ -23,8 +23,7 @@ int rand_generator(int mn, int mx) {
     thread_local random_device rd;
     thread_local mt19937 rng(rd());
     thread_local uniform_int_distribution<int> uid;
-    return uid(rng, decltype(uid)::param_type {
-        mn, mx });
+    return uid(rng, decltype(uid)::param_type {mn,mx});
 }
 
 /// generate random vector
@@ -40,8 +39,8 @@ vi rand_vec(int N, int nw) {
             for (int i = si; i < ei; i++)
                 randArr[i] = rand_generator(MINN, MAXX);
         },
-        th *N / nw,
-        (th + 1) == nw ? N : (th + 1) *N / nw);
+        th * N / nw,
+        (th + 1) == nw ? N : (th + 1) * N / nw);
     }
 
     for_each(threads.begin(), threads.end(), [](thread & th) {
@@ -53,7 +52,7 @@ vi rand_vec(int N, int nw) {
 }
 
 /// print vector
-void print_vec(vi & vec) {
+void print_vec(vi &vec) {
     cout << "\n";
     for (auto x: vec)
         cout << x << "\t";
@@ -64,7 +63,7 @@ void print_vec(vi & vec) {
 void OddEvenSort(vi &Arr, int nw) {
     //
     int N = Arr.size();
-    vi startIndex = { 0, 1 };	// 0 - Even, 1 - Odd
+    vi startIndex = {0, 1};	// 0 - Even, 1 - Odd
     // Even Index starts from 0, Odd Index starts from 1.
     // Both will increase by 2 in each step.
 
@@ -76,23 +75,20 @@ void OddEvenSort(vi &Arr, int nw) {
         for (int ind: startIndex) {
             // start ind: 0 - even or 1 - odd
             for (int th = 0; th < nw; th++) {
-                int sInd = th *len - (th *len) % 2 + ind;
-                int eInd = (th + 1) == nw ? N : min(sInd + len, N);
-
-                threads[th] = thread(				[ &](const int si, const int ei) {
+                threads[th] = thread([&](const int si, const int ei) {
                     // loop over all items
                     for (int i = si; i < ei - 1; i += 2) {
                         if (Arr[i] > Arr[i + 1])
                             swap(Arr[i], Arr[i + 1]);
                     }
                 },
-                sInd,
-                eInd);
+                th * len - (th * len) % 2 + ind,
+                (th + 1) == nw ? N : th * len - (th * len) % 2 + len + ind);
             }
-
             for_each(threads.begin(), threads.end(), [](thread & th) {
                 th.join();
             });
+
         }
     }
     timer->~utimer();

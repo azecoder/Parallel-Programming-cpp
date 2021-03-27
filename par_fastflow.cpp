@@ -18,7 +18,7 @@ typedef vk<int> vi;
 
 const int ARG_COUNT = 3;
 const int MINN = -1e5;
-const int MAXX = 1e5+10;
+const int MAXX = 1e5 + 10;
 
 
 /// mt19937 random number generator

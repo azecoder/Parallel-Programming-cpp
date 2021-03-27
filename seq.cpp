@@ -26,7 +26,7 @@ vi rand_vec(int N) {
 }
 
 /// print vector
-void print_vec(vi & vec) {
+void print_vec(vi &vec) {
     cout << "\n";
     for (auto x: vec)
         cout << x << "\t";
@@ -34,10 +34,10 @@ void print_vec(vi & vec) {
 }
 
 /// Odd-Even Sort
-void OddEvenSort(vi & Arr) {
+void OddEvenSort(vi &Arr) {
     //
     int len = Arr.size();
-    vi startIndex = { 0, 1 };	// 0 - Even, 1 - Odd
+    vi startIndex = {0, 1};	// 0 - Even, 1 - Odd
     // Even Index starts from 0, Odd Index starts from 1.
     // Both will increase by 2 in each step.
 

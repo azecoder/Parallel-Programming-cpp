@@ -15,7 +15,7 @@ typedef vk<int> vi;
 
 const int ARG_COUNT = 3;
 const int MINN = -1e5;
-const int MAXX = 1e5+10;
+const int MAXX = 1e5 + 10;
 
 
 /// mt19937 random number generator
@@ -33,7 +33,7 @@ vi rand_vec(int N, int nw) {
     #pragma omp parallel for num_threads(nw)
     for(int &x: randArr)
         x = rand_generator(MINN, MAXX);
-    // timer_rand -> ~utimer();
+    // timer_rand->~utimer();
     return randArr;
 }
 
@@ -63,7 +63,7 @@ void OddEvenSort(vi &Arr, int nw) {
                     swap(Arr[i], Arr[i + 1]);
             }
     }
-    timer -> ~utimer();
+    timer->~utimer();
 }
 
 int main(int argc, char * argv[]) {
