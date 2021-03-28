@@ -17,7 +17,6 @@ echo ""
 echo ""
 echo "Start: SEQUENTIAL"
 echo ""
-echo "./seq.o 100000 > results/seq.txt"
 ./seq.o 100000 > results/seq.txt
 echo ""
 echo "Finished: SEQUENTIAL"
@@ -27,7 +26,7 @@ echo ""
 echo ""
 echo "Start: PARALLEL"
 echo ""
-for nw in 1 2 4 8 16 32 64
+for nw in 1 2 4 8 12 16 20 24 32 40 48 56 64
     do
     ./par.o 100000 $nw
 done > results/par.txt
@@ -39,7 +38,7 @@ echo ""
 echo ""
 echo "Start: FF PARALLEL FOR"
 echo ""
-for nw in 1 2 4 8 16 32 64
+for nw in 1 2 4 8 12 16 20 24 32 40 48 56 64
     do
     ./par_fastflow.o 100000 $nw
 done > results/par_fastflow.txt
@@ -51,7 +50,7 @@ echo ""
 echo ""
 echo "Start: OMP"
 echo ""
-for nw in 1 2 4 8 16 32 64
+for nw in 1 2 4 8 12 16 20 24 32 40 48 56 64
     do
     ./par_openmp.o 100000 $nw
 done > results/par_openmp.txt

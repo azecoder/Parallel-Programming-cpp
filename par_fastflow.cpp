@@ -54,7 +54,7 @@ void print_vec(vi &vec) {
 /// Odd-Even Sort
 void OddEvenSort(vi &Arr, int nw) {
     //
-    int len = Arr.size();
+    int N = Arr.size();
     vi startIndex = {0, 1}; // 0 - Even, 1 - Odd
     // Even Index starts from 0, Odd Index starts from 1.
     // Both will increase by 2 in each step.
@@ -64,10 +64,10 @@ void OddEvenSort(vi &Arr, int nw) {
     while (!is_sorted(Arr.begin(), Arr.end())) {
         for(int ind: startIndex)
             // start ind: 0 - even or 1 - odd
-            pr.parallel_for(ind, len-1, 2, 0, [&](const long idx) {
-            if(Arr[idx] > Arr[idx + 1])
-                swap(Arr[idx], Arr[idx + 1]);
-        });
+            pr.parallel_for(ind, N - 1, 2, [&](const long idx) {
+                if(Arr[idx] > Arr[idx + 1])
+                    swap(Arr[idx], Arr[idx + 1]);
+            });
     }
     ffTime(STOP_TIME);
     printf("Parallel Time = %g\n", ffTime(GET_TIME));

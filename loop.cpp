@@ -60,37 +60,46 @@ void print_vec(vi &vec) {
     cout << "\n\n";
 }
 
-/// Odd-Even Sort
-void OddEvenSort(vi &Arr, int nw) {
+void Loop(vi &Arr, int nw) {
     //
     int N = Arr.size();
-    vi startIndex = {0, 1};	// 0 - Even, 1 - Odd
-    // Even Index starts from 0, Odd Index starts from 1.
-    // Both will increase by 2 in each step.
 
     vk<thread> threads(nw);	// threads vector
     int chunk = N / nw;
 
     utimer *timer = new utimer("Parallel Code");
-    while (!is_sorted(Arr.begin(), Arr.end())) {
-        for (int ind: startIndex) {
-            // start ind: 0 - even or 1 - odd
-            for (int th = 0; th < nw; th++) {
-                int sInd = th * chunk;
-                sInd += ind - (sInd % 2);
-                int eInd = (th + 1) == nw ? N : (th + 1) * chunk;
-                threads[th] = thread([&](const int si, const int ei) {
-                    // loop over all items
-                    for (int i = si; i < ei; i += 2) {
-                        if (Arr[i] > Arr[i + 1])
-                            swap(Arr[i], Arr[i + 1]);
-                    }
-                }, sInd, eInd);
-            }
-            for_each(threads.begin(), threads.end(), [](thread & th) {
-                th.join();
-            });
+    while(!is_sorted(Arr.begin(), Arr.end())) {
+        for (int th = 0; th < nw; th++) {
+            int sInd = th * chunk;
+            int eInd = (th + 1) == nw ? N : (th + 1) * chunk;
+            // cout << "th: " << th << " [" << sInd << ", " << eInd << "]\n";
+            threads[th] = thread([&](const int si, const int ei) {
+                // loop over all items
+                for (int i = si; i < ei; i += 2) {
+                    if (Arr[i] > Arr[i + 1])
+                        swap(Arr[i], Arr[i + 1]);
+                }
+            }, sInd, eInd);
         }
+        for_each(threads.begin(), threads.end(), [](thread & th) {
+            th.join();
+        });
+        for (int th = 0; th < nw; th++) {
+            int sInd = th * chunk;
+            sInd += (sInd%2) ? 0 : 1;
+            int eInd = (th + 1) == nw ? N : (th + 1) * chunk;
+            // cout << "th: " << th << " [" << sInd << ", " << eInd << "]\n";
+            threads[th] = thread([&](const int si, const int ei) {
+                // loop over all items
+                for (int i = si; i < ei; i += 2) {
+                    if (Arr[i] > Arr[i + 1])
+                        swap(Arr[i], Arr[i + 1]);
+                }
+            }, sInd, eInd);
+        }
+        for_each(threads.begin(), threads.end(), [](thread & th) {
+            th.join();
+        });
     }
     timer->~utimer();
 }
@@ -115,8 +124,8 @@ int main(int argc, char *argv[]) {
     vi Arr = rand_vec(N, nw);
     // print_vec(Arr);
 
-    // Run OddEvenSort
-    OddEvenSort(Arr, nw);
+    // Run Loop
+    Loop(Arr, nw);
 
     // Print Sorted Vector
     // print_vec(Arr);

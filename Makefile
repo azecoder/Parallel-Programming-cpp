@@ -1,7 +1,7 @@
 CXX 	= g++ 
 FLAGS 	= -O3 -std=c++17 -pthread
 OMPFLAG	= -fopenmp
-FF		= -finline-functions -DNDEBUG -Wall -I $(HOME)/fastflow/
+FF		= -finline-functions -Wall -I $(HOME)/fastflow/
 # FF		= -finline-functions -DNDEBUG
 
 seq:

@@ -48,7 +48,7 @@ void print_vec(vi &vec) {
 /// Odd-Even Sort
 void OddEvenSort(vi &Arr, int nw) {
     //
-    int len = Arr.size();
+    int N = Arr.size();
     vi startIndex = {0, 1}; // 0 - Even, 1 - Odd
     // Even Index starts from 0, Odd Index starts from 1.
     // Both will increase by 2 in each step.
@@ -58,7 +58,7 @@ void OddEvenSort(vi &Arr, int nw) {
         for (int ind: startIndex)
             // start ind: 0 - even or 1 - odd
             #pragma omp parallel for num_threads(nw)
-            for(int i = ind; i < len - 1; i+=2) {
+            for(int i = ind; i < N - 1; i+=2) {
                 if (Arr[i] > Arr[i + 1])
                     swap(Arr[i], Arr[i + 1]);
             }
