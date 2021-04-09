@@ -12,6 +12,8 @@ using namespace std;
 #define pb push_back
 
 typedef vk<int> vi;
+typedef pair<int, int> pii;
+typedef vk<pii> vii;
 
 const int ARG_COUNT = 3;
 const int MINN = -1e5;
@@ -60,6 +62,28 @@ void print_vec(vi &vec) {
     cout << "\n\n";
 }
 
+/// make ranges for threads
+vii make_ranges(int N, int nw, int nt) {
+    // number taks, number workers, type number - [0 - even, 1 - odd]
+    vi idxList;
+    for(int i = 0; i < N; i++)
+        if(i%2 == nt)   idxList.pb(i);
+    
+    int sz = int(idxList.size());
+    int chunk = sz / nw;
+    int mod = sz % nw;
+
+    int idx = 0;
+    vii retList(nw);
+    for(int th = 0; th < nw; th++) {
+        int st = idx;
+        int ei = idx + chunk - 1 + (mod-- > 0);
+        retList[th] = make_pair(idxList[st], idxList[ei]);
+        idx = ei + 1;
+    }
+    return retList;
+}
+
 /// Odd-Even Sort
 void OddEvenSort(vi &Arr, int nw) {
     //
@@ -69,28 +93,36 @@ void OddEvenSort(vi &Arr, int nw) {
     // Both will increase by 2 in each step.
 
     vk<thread> threads(nw);	// threads vector
-    int chunk = N / nw;
+
+    vii ranges_even = make_ranges(N, nw, 0);
+    vii ranges_odd = make_ranges(N, nw, 1);
 
     utimer *timer = new utimer("Parallel Code");
     while (!is_sorted(Arr.begin(), Arr.end())) {
-        for (int ind: startIndex) {
-            // start ind: 0 - even or 1 - odd
-            for (int th = 0; th < nw; th++) {
-                int sInd = th * chunk;
-                sInd += ind - (sInd % 2);
-                int eInd = (th + 1) == nw ? N : (th + 1) * chunk;
-                threads[th] = thread([&](const int si, const int ei) {
-                    // loop over all items
-                    for (int i = si; i < ei; i += 2) {
-                        if (Arr[i] > Arr[i + 1])
-                            swap(Arr[i], Arr[i + 1]);
-                    }
-                }, sInd, eInd);
-            }
-            for_each(threads.begin(), threads.end(), [](thread & th) {
-                th.join();
-            });
+        for (int th = 0; th < nw; th++) {
+            threads[th] = thread([&](const int si, const int ei) {
+                // loop over all items
+                for (int i = si; i <= ei; i += 2) {
+                    if (Arr[i] > Arr[i + 1])
+                        swap(Arr[i], Arr[i + 1]);
+                }
+            }, ranges_even[th].first, ranges_even[th].second);
         }
+        for_each(threads.begin(), threads.end(), [](thread & th) {
+            th.join();
+        });
+        for (int th = 0; th < nw; th++) {
+            threads[th] = thread([&](const int si, const int ei) {
+                // loop over all items
+                for (int i = si; i <= ei; i += 2) {
+                    if (Arr[i] > Arr[i + 1])
+                        swap(Arr[i], Arr[i + 1]);
+                }
+            }, ranges_odd[th].first, ranges_odd[th].second);
+        }
+        for_each(threads.begin(), threads.end(), [](thread & th) {
+            th.join();
+        });
     }
     timer->~utimer();
 }

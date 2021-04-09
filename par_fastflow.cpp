@@ -59,15 +59,16 @@ void OddEvenSort(vi &Arr, int nw) {
     // Even Index starts from 0, Odd Index starts from 1.
     // Both will increase by 2 in each step.
 
-    ff::ParallelFor pr(nw);
+    ff::ParallelFor pr(256);
     ffTime(START_TIME);
     while (!is_sorted(Arr.begin(), Arr.end())) {
-        for(int ind: startIndex)
+        for(int ind: startIndex) {
             // start ind: 0 - even or 1 - odd
             pr.parallel_for(ind, N - 1, 2, [&](const long idx) {
                 if(Arr[idx] > Arr[idx + 1])
                     swap(Arr[idx], Arr[idx + 1]);
-            });
+            }, nw);
+        }
     }
     ffTime(STOP_TIME);
     printf("Parallel Time = %g\n", ffTime(GET_TIME));

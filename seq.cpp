@@ -41,13 +41,16 @@ void OddEvenSort(vi &Arr) {
     // Even Index starts from 0, Odd Index starts from 1.
     // Both will increase by 2 in each step.
 
+    bool is_sorted = false;
     utimer *timer = new utimer("Sequential Code");
-    while (!is_sorted(Arr.begin(), Arr.end())) {
+    while (!is_sorted) {
+        is_sorted = true;
         for (int ind: startIndex)
             // start ind: 0 - even or 1 - odd
             for (int i = ind; i < N - 1; i += 2)
                 if (Arr[i] > Arr[i + 1]) {
                     swap(Arr[i], Arr[i + 1]);
+                    if(is_sorted) is_sorted = false;
                 }
     }
     timer->~utimer();
